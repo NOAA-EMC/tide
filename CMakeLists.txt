@@ -1,5 +1,14 @@
 cmake_minimum_required(VERSION 3.18)
-project(TIDE Fortran C CXX)
+project(TIDE
+  VERSION 0.1.0
+  LANGUAGES Fortran C CXX
+  DESCRIPTION "Time-Interpolated Data Engine"
+)
+
+# Semantic version components available as:
+#   TIDE_VERSION_MAJOR, TIDE_VERSION_MINOR, TIDE_VERSION_PATCH
+#   PROJECT_VERSION  (e.g. "0.1.0")
+message(STATUS "TIDE version: ${PROJECT_VERSION}")
 
 # Make cmake/ modules available for FindESMF, FindPIO, etc.
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)

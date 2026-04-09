@@ -3,7 +3,12 @@ name: TIDE Build and Test
 on:
   push:
     branches: [ main, tide-library, tide-integration-tutorial ]
+    tags: [ 'v*' ]
   pull_request:
+
+env:
+  BUILD_DIR: build
+  SPACK_VIEW: /opt/views/view
 
 jobs:
   build-and-test:
@@ -12,23 +17,76 @@ jobs:
       image: jcsda/docker-gnu-openmpi-dev:1.9
       options: --user root
     steps:
-    - uses: actions/checkout@v3
-    - name: Configure CMake
+    - uses: actions/checkout@v4
+
+    - name: Print version
+      run: |
+        echo "TIDE $(cat VERSION)"
+
+    - name: Configure
       shell: bash -l {0}
       run: |
-        export PATH=/opt/views/view/bin:$PATH
-        mkdir -p build
-        cd build
-        cmake .. -DBUILD_TESTING=ON
+        export PATH=${{ env.SPACK_VIEW }}/bin:$PATH
+        cmake -S . -B ${{ env.BUILD_DIR }} \
+          -DBUILD_TESTING=ON \
+          -DCMAKE_BUILD_TYPE=Release
+
     - name: Build
       shell: bash -l {0}
       run: |
-        export PATH=/opt/views/view/bin:$PATH
-        cd build
-        make -j$(nproc)
-    - name: Run Tests
+        export PATH=${{ env.SPACK_VIEW }}/bin:$PATH
+        cmake --build ${{ env.BUILD_DIR }} -j$(nproc)
+
+    - name: Run CTests
       shell: bash -l {0}
       run: |
-        export PATH=/opt/views/view/bin:$PATH
-        cd build
-        ctest --output-on-failure
+        export PATH=${{ env.SPACK_VIEW }}/bin:$PATH
+        cd ${{ env.BUILD_DIR }}
+        ctest --output-on-failure --timeout 300
+
+    - name: Test summary
+      if: always()
+      shell: bash -l {0}
+      run: |
+        export PATH=${{ env.SPACK_VIEW }}/bin:$PATH
+        cd ${{ env.BUILD_DIR }}
+        echo "### CTest Results" >> $GITHUB_STEP_SUMMARY
+        ctest --test-dir . --show-only=json-v1 2>/dev/null | \
+          python3 -c "
+        import sys, json
+        data = json.load(sys.stdin)
+        tests = data.get('tests', [])
+        print(f'Total tests registered: {len(tests)}')
+        for t in tests:
+            print(f'  - {t[\"name\"]}')
+        " >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "Could not parse test list" >> $GITHUB_STEP_SUMMARY
+
+  install-check:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    container:
+      image: jcsda/docker-gnu-openmpi-dev:1.9
+      options: --user root
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure, build, and install
+      shell: bash -l {0}
+      run: |
+        export PATH=${{ env.SPACK_VIEW }}/bin:$PATH
+        cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/tmp/tide-install
+        cmake --build build -j$(nproc)
+        cmake --install build
+
+    - name: Verify install artifacts
+      run: |
+        echo "--- lib/ ---"
+        ls -la /tmp/tide-install/lib/
+        echo "--- include/ (.mod files) ---"
+        find /tmp/tide-install/include -name '*.mod' | head -20
+        test -d /tmp/tide-install/lib
+        test -d /tmp/tide-install/include
+        LIB_COUNT=$(find /tmp/tide-install/lib -type f \( -name '*.a' -o -name '*.so' \) | wc -l)
+        MOD_COUNT=$(find /tmp/tide-install/include -name '*.mod' | wc -l)
+        echo "Libraries: $LIB_COUNT, Modules: $MOD_COUNT"
+        [ "$LIB_COUNT" -gt 0 ] && [ "$MOD_COUNT" -gt 0 ]
