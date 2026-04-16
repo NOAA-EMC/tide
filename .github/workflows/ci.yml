@@ -2,7 +2,7 @@ name: TIDE Build and Test
 
 on:
   push:
-    branches: [ main, tide-library, tide-integration-tutorial ]
+    branches: [ main ]
     tags: [ 'v*' ]
   pull_request:
 
