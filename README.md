@@ -24,6 +24,7 @@ To install to a custom prefix:
 ```bash
 cmake .. -DCMAKE_INSTALL_PREFIX=/path/to/install
 make install
+
 ```
 
 To build with tests enabled:
