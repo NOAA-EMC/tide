@@ -16,9 +16,23 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 # ---------------------------------------------------------------------------
 # External dependencies
 # ---------------------------------------------------------------------------
+# FindESMF parses esmf.mk and also extracts PIO paths from it
 include(FindESMF)
-find_package(PIO REQUIRED COMPONENTS C Fortran)
-find_package(yaml-cpp REQUIRED)
+
+# yaml-cpp: try system install first, fetch from GitHub if not found
+find_package(yaml-cpp QUIET)
+if(NOT yaml-cpp_FOUND)
+  message(STATUS "yaml-cpp not found locally — fetching from GitHub")
+  include(FetchContent)
+  FetchContent_Declare(yaml-cpp
+    GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
+    GIT_TAG        0.8.0
+  )
+  set(YAML_CPP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+  set(YAML_CPP_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
+  set(YAML_CPP_BUILD_CONTRIB OFF CACHE BOOL "" FORCE)
+  FetchContent_MakeAvailable(yaml-cpp)
+endif()
 
 # ---------------------------------------------------------------------------
 # Subdirectories in dependency order

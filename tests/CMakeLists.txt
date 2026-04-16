@@ -42,6 +42,16 @@ function(add_tide_fortran_test TEST_NAME SOURCE_FILE)
     ${ESMF_F90COMPILEPATHS}
     ${PIO_Fortran_INCLUDE_DIR}
   )
+  # Link ESMF and PIO libraries for test executables
+  target_link_libraries(${TEST_NAME} PRIVATE
+    PIO::PIO_Fortran PIO::PIO_C
+  )
+  target_link_options(${TEST_NAME} PRIVATE
+    ${ESMF_F90ESMFLINKRPATHS} ${ESMF_F90LINKPATHS}
+  )
+  target_link_libraries(${TEST_NAME} PRIVATE
+    ${ESMF_F90ESMFLINKLIBS}
+  )
   add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 endfunction()
 

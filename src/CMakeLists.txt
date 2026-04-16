@@ -22,7 +22,10 @@ target_include_directories(tide PRIVATE
 )
 
 # Link sub-libraries and external dependencies
-target_link_libraries(tide PUBLIC dshr streams cdeps_share)
+target_link_libraries(tide PUBLIC dshr streams tide_share)
 target_link_libraries(tide PRIVATE yaml-cpp::yaml-cpp)
+target_link_libraries(tide PUBLIC PIO::PIO_Fortran PIO::PIO_C)
+target_link_options(tide PUBLIC ${ESMF_F90ESMFLINKRPATHS} ${ESMF_F90LINKPATHS})
+target_link_libraries(tide PUBLIC ${ESMF_F90ESMFLINKLIBS})
 
 install(TARGETS tide ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)

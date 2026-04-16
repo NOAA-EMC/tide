@@ -3,7 +3,7 @@ include(ExternalProject)
 set (GenF90_SRCS shr_infnan_mod.F90
                  shr_assert_mod.F90)
 
-add_library(cdeps_share STATIC ${GenF90_SRCS}
+add_library(tide_share STATIC ${GenF90_SRCS}
                          shr_nl_mod.F90
                          shr_timer_mod.F90
                          shr_cal_mod.F90
@@ -18,15 +18,15 @@ add_library(cdeps_share STATIC ${GenF90_SRCS}
                          shr_string_mod.F90
                          nuopc_shr_methods.F90)
 
-target_include_directories (cdeps_share PUBLIC
+target_include_directories (tide_share PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
 )
-target_include_directories (cdeps_share PRIVATE ${ESMF_F90COMPILEPATHS} ${PIO_Fortran_INCLUDE_DIR})
+target_include_directories (tide_share PRIVATE ${ESMF_F90COMPILEPATHS} ${PIO_Fortran_INCLUDE_DIR})
 
-target_compile_definitions(cdeps_share PUBLIC CPRGNU)
+target_compile_definitions(tide_share PUBLIC CPRGNU)
 
-install(TARGETS cdeps_share ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)
+install(TARGETS tide_share ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)
 
 # genf90 support
 if (NOT DEFINED GENF90_PATH)

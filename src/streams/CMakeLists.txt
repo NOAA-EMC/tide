@@ -15,9 +15,9 @@ target_include_directories(streams PUBLIC
 target_include_directories(streams PRIVATE
   ${ESMF_F90COMPILEPATHS}
   ${PIO_Fortran_INCLUDE_DIR}
-  $<TARGET_PROPERTY:cdeps_share,INTERFACE_INCLUDE_DIRECTORIES>
+  $<TARGET_PROPERTY:tide_share,INTERFACE_INCLUDE_DIRECTORIES>
 )
 
-add_dependencies(streams cdeps_share)
+add_dependencies(streams tide_share)
 
 install(TARGETS streams ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)

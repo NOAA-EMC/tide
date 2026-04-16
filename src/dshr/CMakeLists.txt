@@ -14,6 +14,6 @@ target_include_directories(dshr PRIVATE
   ${PIO_Fortran_INCLUDE_DIR}
 )
 
-target_link_libraries(dshr PUBLIC cdeps_share streams)
+target_link_libraries(dshr PUBLIC tide_share streams)
 
 install(TARGETS dshr ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)

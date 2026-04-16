@@ -1,3 +1,83 @@
+# ===========================================================================
+# TIDE .gitignore
+# ===========================================================================
+
+# --- Build directories ---
+build/
+build-*/
+_build/
+cmake-build-*/
+
+# --- CMake generated files ---
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CTestTestfile.cmake
+Makefile
+*.cmake
+!cmake/*.cmake
+!CMakeLists.txt
+_deps/
+
+# --- Compiled objects and libraries ---
+*.o
+*.a
+*.so
+*.so.*
+*.dylib
+*.mod
+*.smod
+
+# --- Fortran generated files ---
+*.i90
+
+# --- Executables (test binaries) ---
+test_prop_*
+test_output_*
+test_regrid_*
+test_field_*
+test_api_*
+test_integration_*
+test_build_system
+
+# --- Editor and IDE ---
 *~
 .sw[a-p]
+*.swp
+*.swo
+.vscode/
+.idea/
+*.code-workspace
+
+# --- macOS ---
 .DS_Store
+._*
+
+# --- Linux ---
+*.out
+
+# --- Python (if hypothesis/pytest used for PBT) ---
+__pycache__/
+*.pyc
+.pytest_cache/
+.hypothesis/
+
+# --- NetCDF test output ---
+*.nc
+!tests/input_data.cdl
+
+# --- Temporary files ---
+/tmp/
+*.tmp
+*.bak
+*.log
+
+# --- Install artifacts ---
+install/
+
+# --- genf90 generated sources (built in build dir) ---
+src/share/shr_infnan_mod.F90
+src/share/shr_assert_mod.F90
+
+# --- Kiro internal ---
+.kiro/

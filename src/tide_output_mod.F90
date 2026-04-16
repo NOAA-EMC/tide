@@ -126,6 +126,9 @@ contains
     lat_vals(:) = coordY(lbnd(1), :)
 
     ! --- Create the NetCDF file via PIO ---
+    ! Set PIO error handling to return errors instead of aborting
+    call pio_seterrorhandling(pio_subsystem, PIO_BCAST_ERROR)
+
     rcode = pio_createfile(pio_subsystem, state%pio_file, PIO_IOTYPE_NETCDF, &
                            trim(output_file), PIO_CLOBBER)
     if (rcode /= PIO_NOERR) then

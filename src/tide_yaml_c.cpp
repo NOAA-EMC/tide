@@ -90,6 +90,8 @@ tide_config_t* tide_parse_yaml(const char* filename) {
         tide_config_t* cfg = new tide_config_t();
         cfg->num_streams = num_streams;
         cfg->streams = new tide_stream_config_t[num_streams];
+        // Zero-initialize so tide_free_config safely handles partial parse errors
+        std::memset(cfg->streams, 0, sizeof(tide_stream_config_t) * num_streams);
 
         // Parse each stream configuration
         for (int i = 0; i < num_streams; ++i) {
@@ -252,31 +254,37 @@ void tide_free_config(tide_config_t* cfg) {
     // Free memory for each stream
     for (int i = 0; i < cfg->num_streams; ++i) {
         tide_stream_config_t& sc = cfg->streams[i];
-        free(sc.name);
-        free(sc.mesh_file);
-        free(sc.lev_dimname);
-        free(sc.tax_mode);
-        free(sc.time_interp);
-        free(sc.map_algo);
-        free(sc.read_mode);
-        free(sc.cf_detection_mode);
-        for (int j = 0; j < sc.num_files; ++j) free(sc.input_files[j]);
-        delete[] sc.input_files;
-        for (int j = 0; j < sc.num_fields; ++j) {
-            free(sc.file_vars[j]);
-            free(sc.model_vars[j]);
+        if (sc.name) free(sc.name);
+        if (sc.mesh_file) free(sc.mesh_file);
+        if (sc.lev_dimname) free(sc.lev_dimname);
+        if (sc.tax_mode) free(sc.tax_mode);
+        if (sc.time_interp) free(sc.time_interp);
+        if (sc.map_algo) free(sc.map_algo);
+        if (sc.read_mode) free(sc.read_mode);
+        if (sc.cf_detection_mode) free(sc.cf_detection_mode);
+        if (sc.input_files) {
+            for (int j = 0; j < sc.num_files; ++j) free(sc.input_files[j]);
+            delete[] sc.input_files;
         }
-        delete[] sc.file_vars;
-        delete[] sc.model_vars;
+        if (sc.file_vars) {
+            for (int j = 0; j < sc.num_fields; ++j) free(sc.file_vars[j]);
+            delete[] sc.file_vars;
+        }
+        if (sc.model_vars) {
+            for (int j = 0; j < sc.num_fields; ++j) free(sc.model_vars[j]);
+            delete[] sc.model_vars;
+        }
 
         // Free output config memory
         if (sc.output.target_grid_file) free(sc.output.target_grid_file);
         if (sc.output.output_file) free(sc.output.output_file);
         if (sc.output.regrid_method) free(sc.output.regrid_method);
-        for (int j = 0; j < sc.output.num_output_fields; ++j) {
-            free(sc.output.output_fields[j]);
+        if (sc.output.output_fields) {
+            for (int j = 0; j < sc.output.num_output_fields; ++j) {
+                free(sc.output.output_fields[j]);
+            }
+            delete[] sc.output.output_fields;
         }
-        if (sc.output.output_fields) delete[] sc.output.output_fields;
     }
     delete[] cfg->streams;
     delete cfg;
