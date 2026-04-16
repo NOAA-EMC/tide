@@ -1,0 +1,55 @@
+site_name: "TIDE"
+site_description: "Time-Interpolated Data Engine"
+repo_url: https://github.com/NOAA-EMC/TIDE
+docs_dir: docs/
+
+theme:
+  name: material
+  palette:
+    primary: indigo
+    accent: teal
+  features:
+    - navigation.tabs
+
+plugins:
+  - search
+  - mkdoxy:
+      projects:
+        tide:
+          src-dirs: src/
+          full-doc: True
+          doxy-cfg:
+            FILE_PATTERNS: "*.F90 *.cpp *.h"
+            RECURSIVE: "YES"
+            OPTIMIZE_FOR_FORTRAN: "YES"
+            EXTRACT_ALL: "YES"
+            GENERATE_HTML: "NO"
+            GENERATE_LATEX: "NO"
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.tabbed
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Building: getting-started/building.md
+    - Quickstart: getting-started/quickstart.md
+  - User Guide:
+    - YAML Configuration: user-guide/yaml-configuration.md
+    - Data Streams: user-guide/data-streams.md
+    - Regridding: user-guide/regridding.md
+    - Output: user-guide/output.md
+  - API Reference:
+    - Overview: api/index.md
+    - Core Modules: api/core-modules.md
+    - Data Stream Handlers: api/data-stream-handlers.md
+    - Stream Modules: api/stream-modules.md
+    - C++ Components: api/cpp-components.md
+    - Shared Utilities: api/shared-utilities.md
+  - Developer Guide:
+    - Contributing: developer-guide/contributing.md
+    - Build System: developer-guide/build-system.md
