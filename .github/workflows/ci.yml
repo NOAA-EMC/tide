@@ -41,6 +41,7 @@ jobs:
       shell: bash -l {0}
       run: |
         export PATH=${{ env.SPACK_VIEW }}/bin:$PATH
+        export LD_LIBRARY_PATH=${{ env.SPACK_VIEW }}/lib:${{ env.SPACK_VIEW }}/lib64:${LD_LIBRARY_PATH:-}
         cd ${{ env.BUILD_DIR }}
         ctest --output-on-failure --timeout 300
 
