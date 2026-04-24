@@ -45,8 +45,8 @@ add_subdirectory(src)
 # ---------------------------------------------------------------------------
 # Testing
 # ---------------------------------------------------------------------------
-option(TIDE_BUILD_TESTING "Build TIDE tests" OFF)
-if(TIDE_BUILD_TESTING)
+option(TIDE_BUILD_TESTS "Build TIDE tests" OFF)
+if(TIDE_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
 endif()
