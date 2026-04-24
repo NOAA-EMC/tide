@@ -28,7 +28,7 @@ jobs:
       run: |
         export PATH=${{ env.SPACK_VIEW }}/bin:$PATH
         cmake -S . -B ${{ env.BUILD_DIR }} \
-          -DBUILD_TESTING=ON \
+          -DTIDE_BUILD_TESTS=ON \
           -DCMAKE_BUILD_TYPE=Release
 
     - name: Build

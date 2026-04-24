@@ -8,7 +8,7 @@
 #   1. Top-level CMake configure succeeds
 #   2. CMake build succeeds
 #   3. CMake install produces lib/ and include/ artifacts
-#   4. BUILD_TESTING=ON adds test targets
+#   4. TIDE_BUILD_TESTS=ON adds test targets
 #
 # This script is designed to run inside the jcsda/docker-gnu-openmpi-dev:1.9
 # Docker image and is registered as a CTest test.
@@ -62,11 +62,11 @@ echo "Install dir  : ${INSTALL_DIR}"
 echo ""
 
 # ---------------------------------------------------------------------------
-# Test 1: CMake configure with BUILD_TESTING=ON succeeds
+# Test 1: CMake configure with TIDE_BUILD_TESTS=ON succeeds
 # ---------------------------------------------------------------------------
-echo "--- Test 1: CMake configure with BUILD_TESTING=ON ---"
+echo "--- Test 1: CMake configure with TIDE_BUILD_TESTS=ON ---"
 if cmake -S "${PROJECT_ROOT}" -B "${BUILD_DIR}" \
-    -DBUILD_TESTING=ON \
+    -DTIDE_BUILD_TESTS=ON \
     -DCMAKE_INSTALL_PREFIX="${INSTALL_DIR}" \
     > "${BUILD_DIR}/cmake_configure.log" 2>&1; then
   pass "CMake configure succeeded (Req 1.1, 1.3, 1.4)"
@@ -129,14 +129,14 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# Test 4: BUILD_TESTING=ON adds test targets
+# Test 4: TIDE_BUILD_TESTS=ON adds test targets
 # ---------------------------------------------------------------------------
-echo "--- Test 4: BUILD_TESTING=ON creates test infrastructure ---"
+echo "--- Test 4: TIDE_BUILD_TESTS=ON creates test infrastructure ---"
 if [ -f "${BUILD_DIR}/CTestTestfile.cmake" ] || \
    find "${BUILD_DIR}" -name "CTestTestfile.cmake" -print -quit | grep -q .; then
   pass "CTestTestfile.cmake found — test targets registered (Req 1.3)"
 else
-  fail "No CTestTestfile.cmake found — BUILD_TESTING may not be working (Req 1.3)"
+  fail "No CTestTestfile.cmake found — TIDE_BUILD_TESTS may not be working (Req 1.3)"
 fi
 
 # ---------------------------------------------------------------------------
