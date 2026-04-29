@@ -48,10 +48,10 @@ The install step places:
 ## Building with Tests
 
 TIDE ships with a test suite that is disabled by default. Enable it with the
-`BUILD_TESTING` option:
+`TIDE_BUILD_TESTS` option:
 
 ```bash
-cmake .. -DBUILD_TESTING=ON
+cmake .. -DTIDE_BUILD_TESTS=ON
 make
 ctest
 ```
@@ -63,7 +63,7 @@ to be available.
 You can combine options as needed:
 
 ```bash
-cmake .. -DCMAKE_INSTALL_PREFIX=/opt/tide -DBUILD_TESTING=ON
+cmake .. -DCMAKE_INSTALL_PREFIX=/opt/tide -DTIDE_BUILD_TESTS=ON
 make
 ctest
 make install
@@ -74,7 +74,7 @@ make install
 | Option | Default | Description |
 | --- | --- | --- |
 | `CMAKE_INSTALL_PREFIX` | system default | Installation path for libraries and module files |
-| `BUILD_TESTING` | `OFF` | Enable the TIDE test suite |
+| `TIDE_BUILD_TESTS` | `OFF` | Enable the TIDE test suite |
 
 ## Next Steps
 

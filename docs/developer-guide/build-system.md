@@ -143,10 +143,10 @@ A Perl-based Fortran preprocessor used to generate `shr_infnan_mod.F90` and
 
 ## Testing
 
-Tests are gated behind the `BUILD_TESTING` option (off by default):
+Tests are gated behind the `TIDE_BUILD_TESTS` option (off by default):
 
 ```bash
-cmake -B build -DBUILD_TESTING=ON
+cmake -B build -DTIDE_BUILD_TESTS=ON
 cmake --build build
 ctest --test-dir build
 ```

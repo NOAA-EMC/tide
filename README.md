@@ -30,7 +30,7 @@ make install
 To build with tests enabled:
 
 ```bash
-cmake .. -DBUILD_TESTING=ON
+cmake .. -DTIDE_BUILD_TESTS=ON
 make
 ctest
 ```
