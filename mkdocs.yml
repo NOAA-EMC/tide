@@ -32,24 +32,24 @@ markdown_extensions:
   - admonition
   - pymdownx.tabbed
 
-nav:
-  - Home: index.md
-  - Getting Started:
-    - Installation: getting-started/installation.md
-    - Building: getting-started/building.md
-    - Quickstart: getting-started/quickstart.md
-  - User Guide:
-    - YAML Configuration: user-guide/yaml-configuration.md
-    - Data Streams: user-guide/data-streams.md
-    - Regridding: user-guide/regridding.md
-    - Output: user-guide/output.md
-  - API Reference:
-    - Overview: api/index.md
-    - Core Modules: api/core-modules.md
-    - Data Stream Handlers: api/data-stream-handlers.md
-    - Stream Modules: api/stream-modules.md
-    - C++ Components: api/cpp-components.md
-    - Shared Utilities: api/shared-utilities.md
-  - Developer Guide:
-    - Contributing: developer-guide/contributing.md
-    - Build System: developer-guide/build-system.md
+# nav:
+#   - Home: index.md
+#   - Getting Started:
+#     - Installation: getting-started/installation.md
+#     - Building: getting-started/building.md
+#     - Quickstart: getting-started/quickstart.md
+#   - User Guide:
+#     - YAML Configuration: user-guide/yaml-configuration.md
+#     - Data Streams: user-guide/data-streams.md
+#     - Regridding: user-guide/regridding.md
+#     - Output: user-guide/output.md
+#   - API Reference:
+#     - Overview: api/index.md
+#     - Core Modules: api/core-modules.md
+#     - Data Stream Handlers: api/data-stream-handlers.md
+#     - Stream Modules: api/stream-modules.md
+#     - C++ Components: api/cpp-components.md
+#     - Shared Utilities: api/shared-utilities.md
+#   - Developer Guide:
+#     - Contributing: developer-guide/contributing.md
+#     - Build System: developer-guide/build-system.md
