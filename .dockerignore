@@ -1,0 +1,19 @@
+# Build artifacts
+build/
+_build/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git internals (not needed in build context)
+.git/
+
+# Documentation build output
+site/
+
+# OS files
+.DS_Store
+Thumbs.db

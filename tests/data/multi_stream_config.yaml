@@ -1,0 +1,68 @@
+# =============================================================================
+# TIDE Multi-Stream Test Configuration
+# Used by multi-stream integration tests with multiple concurrent forcing streams
+#
+# This configuration demonstrates:
+#   - Multiple streams with different forcing files
+#   - Memory budget control
+#   - Performance timer enablement
+#   - Prefetch configuration
+#   - SCRIP weight file usage
+#
+# Requirements validated: 3.6, 4.1
+# =============================================================================
+tide:
+  # Global settings
+  memory_budget_mb: 256
+  enable_timers: true
+
+  target_grids:
+    test_grid:
+      type: "regular_latlon"
+      lats: [-60.0, -20.0, 20.0, 60.0]
+      lons: [0.0, 90.0, 180.0, 270.0]
+      levels: [100000.0, 85000.0, 50000.0, 20000.0]
+      level_units: "Pa"
+
+  streams:
+    - name: "temperature"
+      file: "synthetic_forcing.nc"
+      field: "temperature"
+      source_grid_type: "regular_latlon"
+      target_grid: "test_grid"
+      temporal_mode: "linear"
+      interp_method: "finite-element"
+      scaling:
+        multiplier: 1.0
+        offset: 0.0
+      vertical:
+        extrap_limit: -1.0
+        log_pressure: false
+      prefetch:
+        enabled: true
+        depth: 1
+
+    - name: "emissions"
+      file: "synthetic_emissions.nc"
+      field: "emissions"
+      source_grid_type: "regular_latlon"
+      target_grid: "test_grid"
+      temporal_mode: "linear"
+      interp_method: "finite-element"
+      weight_file: "scrip_conserve_weights.nc"
+      scaling:
+        multiplier: 1.0
+        offset: 0.0
+      vertical:
+        extrap_limit: -1.0
+        log_pressure: false
+      prefetch:
+        enabled: false
+
+# Test parameters (not parsed by TIDE — used by test harness)
+test:
+  target_time: 1800.0
+  num_streams: 2
+  stream_names:
+    - "temperature"
+    - "emissions"

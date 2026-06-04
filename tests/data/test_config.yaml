@@ -1,0 +1,35 @@
+# =============================================================================
+# TIDE Test Configuration
+# Used by end-to-end integration tests with synthetic_forcing.nc
+# =============================================================================
+tide:
+  target_grids:
+    test_grid:
+      # Same grid as source — tests temporal + vertical interpolation
+      # without introducing regridding error
+      type: "regular_latlon"
+      lats: [-60.0, -20.0, 20.0, 60.0]
+      lons: [0.0, 90.0, 180.0, 270.0]
+      levels: [100000.0, 85000.0, 50000.0, 20000.0]
+      level_units: "Pa"
+
+  streams:
+    - name: "temperature"
+      file: "synthetic_forcing.nc"
+      field: "temperature"
+      source_grid_type: "regular_latlon"
+      target_grid: "test_grid"
+      temporal_mode: "linear"
+      interp_method: "finite-element"
+      scaling:
+        multiplier: 1.0
+        offset: 0.0
+      vertical:
+        extrap_limit: -1.0
+        log_pressure: false
+
+# Test parameters (not parsed by TIDE — used by test harness)
+test:
+  target_time: 1800.0
+  reference_file: "reference_output.nc"
+  tolerance: 1.0e-10
