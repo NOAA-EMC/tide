@@ -302,12 +302,15 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
 )
 
 # Install Fortran module files
-if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/mod)
-  install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/mod/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    FILES_MATCHING PATTERN "*.mod"
-  )
-endif()
+# Use install(CODE) to handle the mod directory which only exists after build
+install(CODE "
+  file(GLOB _mod_files \"${CMAKE_CURRENT_BINARY_DIR}/mod/*.mod\")
+  if(_mod_files)
+    foreach(_f \${_mod_files})
+      file(INSTALL \${_f} DESTINATION \"\${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}\")
+    endforeach()
+  endif()
+")
 
 # Export targets for downstream find_package
 install(EXPORT TIDETargets
