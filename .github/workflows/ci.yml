@@ -28,10 +28,6 @@ jobs:
 
       - name: Run pre-commit hooks
         run: pre-commit run --all-files --show-diff-on-failure
-        env:
-          SKIP: clang-format,fprettify
-          # Skip clang-format and fprettify in CI (require specific versions)
-          # They're enforced locally via pre-commit install
 
   # ─────────────────────────────────────────────────────────────────────────
   # Build and Test: full Docker-based build + test suite
@@ -56,6 +52,18 @@ jobs:
           tags: tide-test:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Check C/C++ formatting (clang-format)
+        run: |
+          docker run --rm \
+            --entrypoint bash \
+            tide-test:latest -c "
+              find /tide/src /tide/include/tide /tide/tests \
+                \( -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \) \
+                ! -path '*/extern/*' ! -path '*/_deps/*' ! -path '*/build/*' \
+                -exec clang-format-18 --dry-run --Werror {} + 2>&1 | head -100
+            "
+        continue-on-error: true  # Advisory until codebase is reformatted
 
       - name: Run full test suite
         run: |

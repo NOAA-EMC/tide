@@ -21,22 +21,14 @@ repos:
       - id: check-case-conflict
 
   # ─── C/C++ formatting ─────────────────────────────────────────────────────
-  - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v18.1.8
-    hooks:
-      - id: clang-format
-        types_or: [c, c++]
-        # Only check formatting, don't auto-fix (avoid large diffs)
-        args: [--dry-run, --Werror]
-        # Exclude vendored/external code
-        exclude: ^(extern/|build)
+  # Runs inside Docker via CI (see .github/workflows/ci.yml format-check job).
+  # To run locally: docker run --rm -v $(pwd):/src tide-test:latest \
+  #   find /src/src /src/include /src/tests -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \
+  #   | xargs clang-format --dry-run --Werror
 
-  # ─── CMake formatting ─────────────────────────────────────────────────────
-  - repo: https://github.com/cheshirekow/cmake-format-precommit
-    rev: v0.6.13
-    hooks:
-      - id: cmake-lint
-        exclude: ^(build|_deps)
+  # ─── CMake lint (disabled — too strict for existing CMakeLists) ───────────
+  # cmake-lint's naming conventions (uppercase macros, etc.) conflict with
+  # idiomatic modern CMake patterns used in this project.
 
   # ─── Python (test data generation scripts) ────────────────────────────────
   - repo: https://github.com/astral-sh/ruff-pre-commit

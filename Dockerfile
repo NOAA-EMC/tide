@@ -174,6 +174,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     zlib1g \
     libcurl4t64 \
     libqhull-dev \
+    clang-format-18 \
     ca-certificates \
     python3 \
     python3-netcdf4 \

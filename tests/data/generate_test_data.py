@@ -66,7 +66,9 @@ def analytical_temperature(time_s, lat, lon, lev):
     """
     # Create mesh grids for broadcasting: (lev, lat, lon)
     lev_3d, lat_3d, lon_3d = np.meshgrid(lev, lat, lon, indexing="ij")
-    field = 250.0 + 0.1 * lat_3d + 0.01 * lon_3d + 0.001 * lev_3d + 10.0 * (time_s / 3600.0)
+    field = (
+        250.0 + 0.1 * lat_3d + 0.01 * lon_3d + 0.001 * lev_3d + 10.0 * (time_s / 3600.0)
+    )
     return field
 
 
@@ -114,8 +116,10 @@ def create_synthetic_forcing(filepath, times, lats, lons, levels):
 
     # Data variable
     temp_var = ds.createVariable(
-        "temperature", "f8", ("time", "level", "lat", "lon"),
-        fill_value=9.969209968386869e+36
+        "temperature",
+        "f8",
+        ("time", "level", "lat", "lon"),
+        fill_value=9.969209968386869e36,
     )
     temp_var.units = "K"
     temp_var.long_name = "air temperature"
@@ -218,7 +222,7 @@ def create_scrip_weight_file(filepath, n_src, n_dst, remap_method="Conservative"
     # and 0.7 from cell 1 (overwrite the identity for that cell to test blending)
     if n_identity >= 3:
         # Replace the last identity entry with a blend
-        src_addresses[-1] = 1   # source cell 1 (1-based)
+        src_addresses[-1] = 1  # source cell 1 (1-based)
         weights[-1] = 0.6
         # Add second source for same destination
         src_addresses.append(2)  # source cell 2 (1-based)
@@ -332,10 +336,10 @@ def create_esmf_mesh_file(filepath, n_elements=100):
         for i in range(nx):
             elem_idx = j * nx + i
             # Node indices (0-based in the grid, converted to 1-based for ESMF)
-            n0 = j * (nx + 1) + i          # bottom-left
-            n1 = j * (nx + 1) + (i + 1)    # bottom-right
+            n0 = j * (nx + 1) + i  # bottom-left
+            n1 = j * (nx + 1) + (i + 1)  # bottom-right
             n2 = (j + 1) * (nx + 1) + (i + 1)  # top-right
-            n3 = (j + 1) * (nx + 1) + i    # top-left
+            n3 = (j + 1) * (nx + 1) + i  # top-left
             element_conn[elem_idx, :] = [n0 + 1, n1 + 1, n2 + 1, n3 + 1]
 
     ds = Dataset(filepath, "w", format="NETCDF4_CLASSIC")
@@ -428,13 +432,15 @@ def create_esmf_grid_spec_file(filepath, nlat=18, nlon=36, with_corners=True):
                 corner_lons[idx, 2] = lon_c + half_dlon
                 corner_lons[idx, 3] = lon_c - half_dlon
 
-        clat_corner_var = ds.createVariable("grid_corner_lat", "f8",
-                                            ("grid_size", "grid_corners"))
+        clat_corner_var = ds.createVariable(
+            "grid_corner_lat", "f8", ("grid_size", "grid_corners")
+        )
         clat_corner_var.units = "degrees"
         clat_corner_var[:, :] = corner_lats
 
-        clon_corner_var = ds.createVariable("grid_corner_lon", "f8",
-                                            ("grid_size", "grid_corners"))
+        clon_corner_var = ds.createVariable(
+            "grid_corner_lon", "f8", ("grid_size", "grid_corners")
+        )
         clon_corner_var.units = "degrees"
         clon_corner_var[:, :] = corner_lons
 
@@ -566,8 +572,10 @@ def create_second_forcing_file(filepath, times, lats, lons, levels):
 
     # Emissions data variable
     emis_var = ds.createVariable(
-        "emissions", "f8", ("time", "level", "lat", "lon"),
-        fill_value=9.969209968386869e+36
+        "emissions",
+        "f8",
+        ("time", "level", "lat", "lon"),
+        fill_value=9.969209968386869e36,
     )
     emis_var.units = "kg m-2 s-1"
     emis_var.long_name = "surface emissions flux"
@@ -597,16 +605,18 @@ def main():
     os.makedirs(output_dir, exist_ok=True)
 
     # Grid parameters
-    times = np.array([0.0, 3600.0])               # 2 timesteps (seconds)
-    lats = np.array([-60.0, -20.0, 20.0, 60.0])   # 4 latitudes
-    lons = np.array([0.0, 90.0, 180.0, 270.0])    # 4 longitudes
+    times = np.array([0.0, 3600.0])  # 2 timesteps (seconds)
+    lats = np.array([-60.0, -20.0, 20.0, 60.0])  # 4 latitudes
+    lons = np.array([0.0, 90.0, 180.0, 270.0])  # 4 longitudes
     levels = np.array([100000.0, 85000.0, 50000.0, 20000.0])  # 4 pressure levels (Pa)
 
     target_time = 1800.0  # Midpoint for temporal interpolation
 
     print("Generating TIDE synthetic test data...")
     print(f"  Output directory: {output_dir}")
-    print(f"  Grid: {len(lats)}x{len(lons)} lat-lon, {len(levels)} levels, {len(times)} timesteps")
+    print(
+        f"  Grid: {len(lats)}x{len(lons)} lat-lon, {len(levels)} levels, {len(times)} timesteps"
+    )
     print(f"  Reference time: {target_time}s")
     print()
 
@@ -626,7 +636,9 @@ def main():
     print()
     print("Generating SCRIP weight test files...")
     scrip_path = os.path.join(output_dir, "scrip_weights_conservative.nc")
-    create_scrip_weight_file(scrip_path, n_src=16, n_dst=16, remap_method="Conservative")
+    create_scrip_weight_file(
+        scrip_path, n_src=16, n_dst=16, remap_method="Conservative"
+    )
 
     scrip_2d_path = os.path.join(output_dir, "scrip_weights_bilinear_2d.nc")
     create_scrip_weight_file_2d(scrip_2d_path, n_src=16, n_dst=16)
@@ -634,7 +646,9 @@ def main():
     # Production-readiness test files (task 19.1)
     # SCRIP conservative weight file for integration tests
     scrip_conserve_path = os.path.join(output_dir, "scrip_conserve_weights.nc")
-    create_scrip_weight_file(scrip_conserve_path, n_src=16, n_dst=16, remap_method="Conservative")
+    create_scrip_weight_file(
+        scrip_conserve_path, n_src=16, n_dst=16, remap_method="Conservative"
+    )
 
     # SCRIP bilinear weight file for integration tests
     scrip_bilinear_path = os.path.join(output_dir, "scrip_bilinear_weights.nc")
@@ -649,15 +663,25 @@ def main():
     esmf_grid_spec_path = os.path.join(output_dir, "esmf_grid_spec.nc")
     create_esmf_grid_spec_file(esmf_grid_spec_path, nlat=18, nlon=36, with_corners=True)
 
-    esmf_grid_spec_no_corners_path = os.path.join(output_dir, "esmf_grid_spec_no_corners.nc")
-    create_esmf_grid_spec_file(esmf_grid_spec_no_corners_path, nlat=4, nlon=8, with_corners=False)
+    esmf_grid_spec_no_corners_path = os.path.join(
+        output_dir, "esmf_grid_spec_no_corners.nc"
+    )
+    create_esmf_grid_spec_file(
+        esmf_grid_spec_no_corners_path, nlat=4, nlon=8, with_corners=False
+    )
 
     # Print summary for verification
     print()
     print("Verification of analytical function:")
-    print(f"  T(0, -60, 0, 100000)    = {analytical_temperature(0, lats, lons, levels)[0, 0, 0]:.6f}")
-    print(f"  T(3600, 60, 270, 20000) = {analytical_temperature(3600, lats, lons, levels)[3, 3, 3]:.6f}")
-    print(f"  T(1800, 0, 0, 50000)    = {analytical_temperature(1800, lats, lons, levels)[2, 2, 0]:.6f}")
+    print(
+        f"  T(0, -60, 0, 100000)    = {analytical_temperature(0, lats, lons, levels)[0, 0, 0]:.6f}"
+    )
+    print(
+        f"  T(3600, 60, 270, 20000) = {analytical_temperature(3600, lats, lons, levels)[3, 3, 3]:.6f}"
+    )
+    print(
+        f"  T(1800, 0, 0, 50000)    = {analytical_temperature(1800, lats, lons, levels)[2, 2, 0]:.6f}"
+    )
     print()
     print("Done.")
 
